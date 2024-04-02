@@ -1,71 +1,16 @@
 import "./index.css";
-import { forwardRef, useRef, useState, ComponentProps } from "react";
+import { useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import THREE, { Mesh } from "three";
-import {
-  Float,
-  MeshWobbleMaterial,
-  PresentationControls,
-} from "@react-three/drei";
+import { Mesh } from "three";
+import { Float, PresentationControls } from "@react-three/drei";
 
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-
-type MyMeshProps = ComponentProps<"mesh">;
 
 function Scene() {
   const gltf = useLoader(GLTFLoader, "/models/just_a_girl/scene.gltf");
   return <primitive object={gltf.scene} />;
 }
-
-const Box = (props: MyMeshProps) => {
-  const meshRef = useRef<Mesh>(null);
-
-  const [hovered, setHover] = useState(false);
-  const [active, setActive] = useState(false);
-
-  useFrame((state, delta) => {
-    if (!meshRef.current) return;
-
-    meshRef.current.rotation.x += delta * 0.5;
-  });
-
-  return (
-    <mesh
-      {...props}
-      ref={meshRef}
-      scale={active ? 1.5 : 1}
-      onClick={() => setActive(!active)}
-      onPointerOver={() => setHover(true)}
-      onPointerOut={() => setHover(false)}
-    >
-      <boxGeometry args={[1, 1, 1]} />
-      <MeshWobbleMaterial
-        speed={0.75}
-        factor={2}
-        color={hovered ? "hotpink" : "orange"}
-      />
-    </mesh>
-  );
-};
-
-const TorusKnot = forwardRef(
-  (props: MyMeshProps, ref: React.ForwardedRef<Mesh>) => {
-    const [active, setActive] = useState(false);
-
-    return (
-      <mesh
-        {...props}
-        ref={ref}
-        scale={active ? 1.5 : 1}
-        onClick={() => setActive(!active)}
-      >
-        <torusKnotGeometry args={[10, 3, 64, 64]} />
-        <meshNormalMaterial />
-      </mesh>
-    );
-  }
-);
 
 export function App() {
   useThree(({ camera }) => {

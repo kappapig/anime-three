@@ -2,7 +2,6 @@ import "./index.css";
 import { createRoot } from "react-dom/client";
 import { Canvas } from "@react-three/fiber";
 import { App } from "./App";
-import { Vector3 } from "three";
 import { Suspense } from "react";
 import { Preload } from "@react-three/drei";
 import { Loading } from "./Loading";
