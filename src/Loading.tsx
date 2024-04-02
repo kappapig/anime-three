@@ -1,5 +1,3 @@
-import React from "react";
-
 export const Loading = () => {
   return (
     <div className='bg-gray-300 w-48 h-48 flex justify-center items-center rounded-3xl'>
