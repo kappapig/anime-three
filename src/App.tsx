@@ -7,7 +7,7 @@ import { Float, PresentationControls } from "@react-three/drei";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
-import just_a_girl from "./assets/models/just_a_girl/scene.gltf?raw";
+import just_a_girl from "./assets/models/just_a_girl/scene.gltf?url";
 
 function Scene() {
   const gltf = useLoader(GLTFLoader, just_a_girl);
