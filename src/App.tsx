@@ -1,0 +1,134 @@
+import "./index.css";
+import { forwardRef, useRef, useState, ComponentProps } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import THREE, { Mesh } from "three";
+import {
+  Float,
+  MeshWobbleMaterial,
+  PresentationControls,
+} from "@react-three/drei";
+
+import { useLoader } from "@react-three/fiber";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+
+type MyMeshProps = ComponentProps<"mesh">;
+
+function Scene() {
+  const gltf = useLoader(GLTFLoader, "/models/just_a_girl/scene.gltf");
+  return <primitive object={gltf.scene} />;
+}
+
+const Box = (props: MyMeshProps) => {
+  const meshRef = useRef<Mesh>(null);
+
+  const [hovered, setHover] = useState(false);
+  const [active, setActive] = useState(false);
+
+  useFrame((state, delta) => {
+    if (!meshRef.current) return;
+
+    meshRef.current.rotation.x += delta * 0.5;
+  });
+
+  return (
+    <mesh
+      {...props}
+      ref={meshRef}
+      scale={active ? 1.5 : 1}
+      onClick={() => setActive(!active)}
+      onPointerOver={() => setHover(true)}
+      onPointerOut={() => setHover(false)}
+    >
+      <boxGeometry args={[1, 1, 1]} />
+      <MeshWobbleMaterial
+        speed={0.75}
+        factor={2}
+        color={hovered ? "hotpink" : "orange"}
+      />
+    </mesh>
+  );
+};
+
+const TorusKnot = forwardRef(
+  (props: MyMeshProps, ref: React.ForwardedRef<Mesh>) => {
+    const [active, setActive] = useState(false);
+
+    return (
+      <mesh
+        {...props}
+        ref={ref}
+        scale={active ? 1.5 : 1}
+        onClick={() => setActive(!active)}
+      >
+        <torusKnotGeometry args={[10, 3, 64, 64]} />
+        <meshNormalMaterial />
+      </mesh>
+    );
+  }
+);
+
+export function App() {
+  useThree(({ camera }) => {
+    camera.position.set(-5, 90, 35);
+    camera.rotation.set(0.06, -0.2, 0.012);
+    // camera.lookAt(
+    //   new Vector3(-0.8804659124961525, 103.65194286142722, -7.191185550957737)
+    // );
+  });
+
+  const { camera } = useThree();
+
+  const torusKnotRef = useRef<Mesh>(null);
+
+  useFrame(({ mouse }, delta) => {
+    if (!torusKnotRef.current) return;
+
+    torusKnotRef.current.rotation.x += delta * 0.1;
+    torusKnotRef.current.rotation.z += delta * 0.1;
+
+    camera.position.x = mouse.x * 3;
+    camera.position.y = mouse.y * 3;
+  });
+
+  return (
+    <>
+      {/* <CameraControls
+        onEnd={() => {
+          console.log("camera: ", camera);
+          // console.log("position: ", camera.position);
+        }}
+      /> */}
+      <ambientLight intensity={Math.PI / 2} />
+      <spotLight
+        position={[10, 10, 10]}
+        angle={0.15}
+        penumbra={1}
+        decay={0}
+        intensity={Math.PI}
+      />
+      <pointLight
+        position={[-10, -10, -10]}
+        decay={0}
+        intensity={Math.PI}
+      />
+      <PresentationControls
+        global
+        azimuth={[-0.15, 0.15]}
+        polar={[-0.15, 0.15]}
+        snap
+        speed={0.075}
+      >
+        <Float
+          speed={0.085}
+          floatIntensity={0.005}
+        >
+          {/* <TorusKnot
+          ref={torusKnotRef}
+          position={[0, 0, 0]}
+        /> */}
+          <Scene />
+        </Float>
+      </PresentationControls>
+    </>
+  );
+}

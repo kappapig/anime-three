@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+canvas {
+  width: 100dvw;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: skyblue;
+  touch-action: none;
+}
