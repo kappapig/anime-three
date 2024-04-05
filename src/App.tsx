@@ -4,13 +4,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { Mesh } from "three";
 import { Float, PresentationControls } from "@react-three/drei";
 
-import { useLoader } from "@react-three/fiber";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-
-function Scene() {
-  const gltf = useLoader(GLTFLoader, "/models/just_a_girl/scene.gltf");
-  return <primitive object={gltf.scene} />;
-}
+import { Girl } from "./Models/Girl";
 
 export function App() {
   useThree(({ camera }) => {
@@ -47,6 +41,7 @@ export function App() {
         decay={0}
         intensity={Math.PI}
       />
+
       <PresentationControls
         global
         azimuth={[-0.15, 0.15]}
@@ -58,7 +53,7 @@ export function App() {
           speed={0.085}
           floatIntensity={0.005}
         >
-          <Scene />
+          <Girl />
         </Float>
       </PresentationControls>
     </>
